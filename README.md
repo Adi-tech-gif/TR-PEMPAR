@@ -11,7 +11,7 @@
 Buka terminal/command prompt pada direktori tempat file main.cpp berada, kemudian jalankan perintah kompilasi berikut:
 
 Bash
-g++ -O3 main.cpp -o simulasi_hujan -lSDL2 -fopenmp
+g++ -O3 -fopenmp main.cpp -o simulasi_hujan -lSDL2
 Keterangan Flag:
 
 -O3 : Mengaktifkan optimasi tingkat tinggi agar eksekusi program berjalan maksimal.
@@ -20,23 +20,12 @@ Keterangan Flag:
 
 -fopenmp : Mengaktifkan fitur multi-threading OpenMP pada kompiler GCC.
 
-
-## 3. Langkah Kompilasi
-
-Masuk ke folder project
-
-cd /mnt/hgfs/SHARED/TRPEMPAR
-
-Compile program
-
-g++ -O3 -fopenmp main.cpp -o simulasi_hujan -lSDL2
-
 Menjalankan program
 
 ./simulasi_hujan
 
 
-## 4. Cara Kerja Program
+## 3. Cara Kerja Program
 
 Program bekerja dengan langkah-langkah berikut.
 
@@ -53,7 +42,7 @@ Seluruh partikel kemudian digambar kembali ke layar.
 Program melakukan benchmark serial dan paralel.
 Hasil benchmark ditampilkan pada terminal.
 
-# 4.1 Flowchart Program
+# 4. Flowchart Program
 
 ```mermaid
 flowchart TD
@@ -89,7 +78,7 @@ flowchart TD
     V --> D
 ```
 
-### 4.3 Implementasi Paralel OpenMP
+### 5. Implementasi Paralel OpenMP
 
 Implementasi paralel dilakukan pada proses update posisi seluruh partikel.
 
@@ -113,12 +102,12 @@ Keuntungan:
 Memanfaatkan multicore processor.
 Waktu update semakin kecil jika jumlah partikel sangat besar.
 
-### 4.4 Hasil Pengujian
+### 6. Hasil Pengujian
 
 Pengujian dilakukan dengan jumlah partikel 2000.
 
 Output terminal:
-
+![Output Terminal](outputterminal.png)
 MEMULAI SIMULASI HUJAN DENGAN 2000 PARTIKEL
 
 [BENCHMARK]
@@ -155,7 +144,7 @@ Program juga berhasil menampilkan hasil benchmark serial dan paralel pada termin
 
 ---
 
-## 5. Analisis Hasil
+## 7. Analisis Hasil
 
 Berdasarkan hasil pengujian diperoleh:
 
@@ -171,7 +160,7 @@ Hal ini disebabkan karena jumlah partikel yang relatif sedikit sehingga overhead
 
 Namun apabila jumlah partikel diperbesar (misalnya 50.000 hingga 500.000 partikel), maka OpenMP akan mulai menunjukkan keuntungan karena beban kerja dapat dibagi ke beberapa inti prosesor.
 
-9. Kesimpulan
+8. Kesimpulan
 
 Berdasarkan hasil implementasi dapat disimpulkan bahwa:
 
