@@ -27,45 +27,76 @@ Menjalankan program
 
 ## 3. Cara Kerja Program
 
-Program simulasi hujan ini dibuat menggunakan SDL2 sebagai library grafis untuk menampilkan animasi hujan secara real-time dan OpenMP untuk mempercepat proses pembaruan posisi partikel melalui komputasi paralel. Secara umum alur kerja program adalah sebagai berikut:
+## 3. Cara Kerja Program
 
-Inisialisasi SDL2
-Program memulai dengan menginisialisasi library SDL2.
-Setelah berhasil, program membuat sebuah window dan renderer yang digunakan sebagai media untuk menggambar seluruh objek hujan.
-Inisialisasi Partikel
-Program mengalokasikan sejumlah partikel sesuai nilai NUM_PARTICLES (misalnya 2000 partikel).
-Setiap partikel diberikan nilai awal secara acak, meliputi:
-Posisi horizontal (X)
-Posisi vertikal (Y)
-Kecepatan jatuh
-Panjang tetesan hujan
-Arah gerakan horizontal yang kecil untuk memberikan efek hujan tertiup angin.
-Memasuki Loop Utama
-Setelah seluruh partikel berhasil dibuat, program memasuki loop utama (main loop).
-Loop ini akan terus berjalan hingga pengguna menutup jendela aplikasi.
-Pengecekan Event
-Pada setiap iterasi loop, SDL2 memeriksa apakah terdapat event dari pengguna, seperti menutup window.
-Jika event penutupan terdeteksi, program keluar dari loop dan melakukan proses pembersihan memori.
-Update Posisi Partikel Secara Paralel
-Pembaruan posisi seluruh partikel dilakukan menggunakan directive OpenMP #pragma omp parallel for.
-Setiap thread bertugas memperbarui sebagian partikel sehingga proses dapat dikerjakan secara bersamaan pada beberapa inti prosesor.
-Untuk setiap partikel dilakukan proses berikut:
-Jika partikel sedang berada pada fase percikan (splash), maka waktu splash akan dikurangi hingga habis.
-Setelah splash selesai, partikel dikembalikan ke bagian atas layar dengan posisi acak.
-Jika partikel sedang jatuh, maka kecepatan akan bertambah akibat efek gravitasi.
-Posisi X dan Y diperbarui sesuai kecepatan yang dimiliki.
-Apabila partikel mencapai batas bawah layar, maka status splash akan diaktifkan sehingga menghasilkan efek percikan sebelum kembali ke atas.
-Rendering Grafis
-Setelah seluruh posisi partikel selesai diperbarui, renderer membersihkan layar dari frame sebelumnya.
-Program kemudian menggambar seluruh partikel hujan beserta efek percikan air sesuai posisi terbarunya.
-Hasil gambar ditampilkan ke layar menggunakan fungsi SDL_RenderPresent() sehingga animasi terlihat berjalan secara real-time.
-Pengaturan Frame Rate
-Setelah proses rendering selesai, program memberikan delay sekitar 16 ms.
-Delay ini bertujuan menjaga kecepatan animasi tetap stabil pada sekitar 60 FPS (Frame Per Second) sehingga pergerakan hujan terlihat lebih halus.
-Benchmark Performa
-Selain menjalankan simulasi, program juga melakukan pengujian performa antara implementasi serial dan paralel.
-Waktu eksekusi masing-masing metode diukur menggunakan timer beresolusi tinggi.
-Hasil pengukuran ditampilkan pada terminal berupa waktu eksekusi rata-rata dan nilai speedup sehingga dapat dibandingkan efektivitas penggunaan OpenMP terhadap implementasi serial.
+Program ini mensimulasikan animasi hujan menggunakan **SDL2** sebagai media visualisasi dan **OpenMP** untuk mempercepat proses pembaruan posisi partikel. Alur kerja program dijelaskan sebagai berikut.
+
+### 3.1 Inisialisasi SDL2
+
+- Program menginisialisasi library SDL2.
+- Membuat **window** sebagai tampilan utama simulasi.
+- Membuat **renderer** yang digunakan untuk menggambar seluruh objek pada layar.
+
+### 3.2 Inisialisasi Partikel
+
+- Program membuat sebanyak **2000 partikel hujan** (dapat diubah melalui variabel `NUM_PARTICLES`).
+- Setiap partikel memiliki atribut yang diinisialisasi secara acak, yaitu:
+  - Posisi awal pada sumbu X.
+  - Posisi awal pada sumbu Y.
+  - Kecepatan jatuh.
+  - Panjang tetesan hujan.
+  - Status percikan (*splash timer*).
+
+### 3.3 Loop Utama Program
+
+Setelah seluruh partikel berhasil dibuat, program memasuki **loop utama** (*main loop*) yang akan terus berjalan hingga pengguna menutup jendela aplikasi.
+
+Pada setiap iterasi loop dilakukan beberapa proses berikut.
+
+#### a. Pengecekan Event
+
+- Membaca seluruh event dari SDL2.
+- Memeriksa apakah pengguna menutup window.
+- Jika window ditutup, program keluar dari loop dan mengakhiri simulasi.
+
+#### b. Update Partikel Menggunakan OpenMP
+
+- Posisi seluruh partikel diperbarui menggunakan directive:
+
+```cpp
+#pragma omp parallel for
+```
+
+- OpenMP membagi pekerjaan pembaruan partikel ke beberapa thread sehingga proses dapat berjalan secara paralel.
+- Untuk setiap partikel dilakukan proses berikut:
+  - Jika partikel sedang berada pada fase **splash**, maka nilai `splashTimer` dikurangi.
+  - Jika `splashTimer` habis, partikel dikembalikan ke bagian atas layar dengan posisi acak.
+  - Jika partikel sedang jatuh, kecepatan bertambah akibat efek gravitasi.
+  - Posisi X dan Y diperbarui sesuai kecepatan yang dimiliki.
+  - Ketika mencapai batas bawah layar, partikel akan memasuki fase percikan (*splash*) sebelum direset kembali ke atas.
+
+#### c. Rendering
+
+Setelah seluruh partikel selesai diperbarui, program melakukan proses rendering dengan langkah berikut.
+
+- Membersihkan layar dari frame sebelumnya.
+- Menggambar seluruh partikel hujan beserta efek percikan.
+- Menampilkan hasil gambar menggunakan `SDL_RenderPresent()`.
+
+#### d. Pengaturan Frame Rate
+
+- Program memberikan jeda sekitar **16 ms** pada setiap iterasi.
+- Jeda ini menjaga animasi tetap stabil pada sekitar **60 FPS (Frame Per Second)** sehingga pergerakan hujan terlihat lebih halus.
+
+### 3.4 Benchmark Performa
+
+Selain menjalankan simulasi, program juga melakukan pengujian performa untuk membandingkan implementasi **serial** dan **paralel**.
+
+- Mengukur waktu eksekusi update partikel secara serial.
+- Mengukur waktu eksekusi update partikel menggunakan OpenMP.
+- Menghitung rata-rata waktu eksekusi.
+- Menghitung nilai **speedup**.
+- Menampilkan seluruh hasil benchmark pada terminal.
 
 # 4. Flowchart Program
 
