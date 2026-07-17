@@ -163,7 +163,7 @@ Hal ini disebabkan karena jumlah partikel yang relatif sedikit sehingga overhead
 
 Namun apabila jumlah partikel diperbesar (misalnya 50.000 hingga 500.000 partikel), maka OpenMP akan mulai menunjukkan keuntungan karena beban kerja dapat dibagi ke beberapa inti prosesor.
 
-8. Kesimpulan
+## 8. Kesimpulan
 
 Berdasarkan hasil implementasi dapat disimpulkan bahwa:
 
