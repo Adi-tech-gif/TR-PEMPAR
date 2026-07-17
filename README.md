@@ -27,8 +27,6 @@ Menjalankan program
 
 ## 3. Cara Kerja Program
 
-## 3. Cara Kerja Program
-
 Program ini mensimulasikan animasi hujan menggunakan **SDL2** sebagai media visualisasi dan **OpenMP** untuk mempercepat proses pembaruan posisi partikel. Alur kerja program dijelaskan sebagai berikut.
 
 ### 3.1 Inisialisasi SDL2
@@ -134,29 +132,65 @@ flowchart TD
     V --> D
 ```
 
-### 5. Implementasi Paralel OpenMP
 
-Implementasi paralel dilakukan pada proses update posisi seluruh partikel.
+## 5. Implementasi Paralel OpenMP
 
-Contoh implementasi:
+Implementasi paralel pada program ini menggunakan **OpenMP** untuk mempercepat proses pembaruan (update) posisi seluruh partikel hujan. Bagian ini merupakan proses yang paling sering dieksekusi karena dilakukan pada setiap frame animasi, sehingga menjadi kandidat yang tepat untuk diparalelkan.
 
+### 5.1 Kode Implementasi
+
+```cpp
 #pragma omp parallel for
-for(int i=0;i<NUM_PARTICLES;i++)
+for (int i = 0; i < NUM_PARTICLES; i++)
 {
     particles[i].update();
 }
+```
 
-Penjelasan:
+### 5.2 Cara Kerja OpenMP
 
-OpenMP membagi indeks partikel ke beberapa thread.
-Setiap thread memperbarui posisi partikel yang berbeda.
-Tidak terjadi race condition karena setiap thread hanya mengakses data partikelnya sendiri.
-Setelah seluruh thread selesai, hasil digabungkan sebelum proses render.
+Directive `#pragma omp parallel for` digunakan untuk membagi proses perulangan ke beberapa thread yang berjalan secara bersamaan. Setiap thread memperoleh sebagian indeks partikel untuk diproses secara independen.
 
-Keuntungan:
+Pada setiap iterasi, thread melakukan beberapa operasi berikut:
 
-Memanfaatkan multicore processor.
-Waktu update semakin kecil jika jumlah partikel sangat besar.
+- Memperbarui posisi horizontal (**X**) dan vertikal (**Y**) partikel.
+- Menambahkan kecepatan jatuh akibat efek gravitasi.
+- Memeriksa apakah partikel sedang berada pada fase **splash**.
+- Mengurangi nilai `splashTimer` apabila splash masih aktif.
+- Mengembalikan partikel ke bagian atas layar apabila splash telah selesai.
+- Mengaktifkan efek splash ketika partikel mencapai batas bawah layar.
+
+### 5.3 Pembagian Beban Kerja
+
+OpenMP secara otomatis membagi seluruh partikel ke beberapa thread sesuai jumlah inti (core) prosesor yang tersedia.
+
+Sebagai contoh, apabila terdapat **2000 partikel** dan **4 thread**, maka pembagian pekerjaan dapat berlangsung seperti berikut.
+
+| Thread | Partikel yang Diproses |
+|--------:|------------------------|
+| Thread 0 | 0 – 499 |
+| Thread 1 | 500 – 999 |
+| Thread 2 | 1000 – 1499 |
+| Thread 3 | 1500 – 1999 |
+
+Dengan mekanisme tersebut, proses pembaruan posisi partikel dapat dilakukan secara bersamaan sehingga waktu komputasi berpotensi menjadi lebih singkat ketika jumlah partikel cukup besar.
+
+### 5.4 Keamanan Paralel (Race Condition)
+
+Implementasi ini tidak mengalami **race condition** karena setiap thread hanya mengakses dan memperbarui data milik satu partikel pada indeks yang berbeda.
+
+Tidak ada variabel global yang dimodifikasi secara bersamaan oleh beberapa thread sehingga proses update dapat dilakukan secara aman tanpa memerlukan mekanisme sinkronisasi tambahan seperti `critical` atau `mutex`.
+
+### 5.5 Keuntungan Penggunaan OpenMP
+
+Penggunaan OpenMP pada simulasi ini memberikan beberapa keuntungan, antara lain:
+
+- Memanfaatkan kemampuan **multi-core processor**.
+- Memproses banyak partikel secara bersamaan.
+- Mengurangi waktu komputasi ketika jumlah partikel sangat besar.
+- Implementasi relatif sederhana karena hanya memerlukan penambahan directive OpenMP tanpa mengubah struktur program secara signifikan.
+
+Namun, pada jumlah partikel yang kecil seperti **2000 partikel**, waktu eksekusi paralel dapat lebih lambat dibandingkan serial. Hal ini disebabkan oleh **overhead** pembentukan thread dan proses sinkronisasi yang masih lebih besar daripada beban komputasi pada setiap iterasi.
 
 ### 6. Hasil Pengujian
 
