@@ -107,8 +107,11 @@ Waktu update semakin kecil jika jumlah partikel sangat besar.
 Pengujian dilakukan dengan jumlah partikel 2000.
 
 Output terminal:
+
 ![Output Terminal](outputterminal.png)
+
 MEMULAI SIMULASI HUJAN DENGAN 2000 PARTIKEL
+![Gambarhujan](gambarhujan.png)
 
 [BENCHMARK]
 Serial   : 0.007 ms
