@@ -53,34 +53,41 @@ Seluruh partikel kemudian digambar kembali ke layar.
 Program melakukan benchmark serial dan paralel.
 Hasil benchmark ditampilkan pada terminal.
 
-### 4.1 Flowchart Program
-                Mulai
-                   │
-                   ▼
-        Inisialisasi SDL2
-                   │
-                   ▼
-      Membuat Seluruh Partikel
-                   │
-                   ▼
-        Selama Window Aktif
-                   │
-        ┌──────────┴──────────┐
-        │                     │
-        ▼                     ▼
- Update Posisi Partikel   Benchmark
- (OpenMP Parallel)      Serial & Parallel
-        │
-        ▼
- Render Semua Partikel
-        │
-        ▼
- Apakah Window Ditutup?
-        │
-   Ya ──┴── Tidak
-        │
-        ▼
-      Selesai
+# 4.1 Flowchart Program
+
+```mermaid
+flowchart TD
+    A([Mulai Program]) --> B[Inisialisasi SDL2 & Window]
+    B --> C[Alokasi & Inisialisasi 2000 Partikel<br/>Posisi, Kecepatan, dan Panjang Acak]
+    C --> D{{Loop Utama Real-Time}}
+
+    D --> E{Event Window<br/>Ditutup?}
+    E -- Ya --> F[Hancurkan Window<br/>SDL_Quit]
+    F --> G([Selesai])
+
+    E -- Tidak --> H[PARALELISASI OPENMP]
+    H --> I["#pragma omp parallel for<br/><br/>Untuk setiap partikel (0 hingga N-1)<br/>secara paralel"]
+
+    I --> J{Splash Timer > 0?}
+
+    J -- Ya --> K[Kurangi splashTimer]
+    K --> L{Splash Timer Habis?}
+    L -- Ya --> M[Reset Posisi ke Atas]
+    L -- Tidak --> R
+
+    J -- Tidak --> N[Tambah Kecepatan Jatuh<br/>Efek Gravitasi]
+    N --> O[Update Posisi Y & Posisi X]
+    O --> P{Menyentuh Batas Bawah?}
+    P -- Ya --> Q[Aktifkan splashTimer]
+    P -- Tidak --> R
+    Q --> R
+
+    R --> S[Bersihkan Layar]
+    S --> T[Gambar Hujan & Percikan]
+    T --> U[SDL_RenderPresent]
+    U --> V[Delay 16 ms]
+    V --> D
+```
 
 ### 4.3 Implementasi Paralel OpenMP
 
