@@ -215,9 +215,7 @@ Parallel : 0.908 ms
 Serial   : 0.007 ms
 Parallel : 0.837 ms
 
-====================================
 KESIMPULAN AKHIR PENGUJIAN
-====================================
 
 Rata-rata Serial   : 0.007 ms
 Rata-rata Parallel : 0.868 ms
