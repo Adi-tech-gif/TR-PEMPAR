@@ -222,18 +222,6 @@ KESIMPULAN AKHIR PENGUJIAN
 Rata-rata Serial   : 0.007 ms
 Rata-rata Parallel : 0.868 ms
 Speedup            : 0.008x
-Dokumentasi Program
-Hasil Visualisasi
-
-Program berhasil menampilkan simulasi hujan menggunakan SDL2.
-
-(Masukkan screenshot animasi hujan yang Anda lampirkan pada bagian ini.)
-
-Hasil Benchmark
-
-Program juga berhasil menampilkan hasil benchmark serial dan paralel pada terminal.
-
-(Masukkan screenshot terminal benchmark yang Anda lampirkan pada bagian ini.)
 
 ---
 
