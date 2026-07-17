@@ -151,11 +151,13 @@ Program juga berhasil menampilkan hasil benchmark serial dan paralel pada termin
 
 Berdasarkan hasil pengujian diperoleh:
 
-Parameter	Nilai
-Jumlah Partikel	2000
-Serial	0.007 ms
-Parallel	0.868 ms
-Speedup	0.008x
+| Pengujian     | Serial (ms) | Parallel (ms) |    Speedup |
+| ------------- | ----------: | ------------: | ---------: |
+| 1             |       0.007 |         0.995 |     0.007x |
+| 2             |       0.007 |         0.908 |     0.008x |
+| 3             |       0.007 |         0.837 |     0.008x |
+| **Rata-rata** |   **0.007** |     **0.868** | **0.008x** |
+
 
 Terlihat bahwa implementasi paralel menghasilkan waktu yang lebih lama dibandingkan implementasi serial.
 
