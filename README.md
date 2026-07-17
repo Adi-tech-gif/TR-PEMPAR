@@ -11,7 +11,9 @@
 Buka terminal/command prompt pada direktori tempat file main.cpp berada, kemudian jalankan perintah kompilasi berikut:
 
 Bash
+
 g++ -O3 -fopenmp main.cpp -o simulasi_hujan -lSDL2
+
 Keterangan Flag:
 
 -O3 : Mengaktifkan optimasi tingkat tinggi agar eksekusi program berjalan maksimal.
