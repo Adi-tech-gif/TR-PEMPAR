@@ -9,7 +9,7 @@
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
-// Sesuai Spek Tabel Anda: Ubah nilai ini untuk menguji performa (500, 2000, 10000, atau 50000)
+// custom jumlah partikel (500, 2000, 10000, atau 50000)
 const int NUM_PARTICLES = 2000; 
 
 struct Particle {
@@ -62,7 +62,7 @@ int main(int argc, char* args[]) {
         std::vector<Particle> particles_serial = particles;
         std::vector<Particle> particles_parallel = particles;
 
-        // ---- 1. PENGUJIAN VERSI SERIAL (Single-Thread) ----
+        // 1. PENGUJIAN VERSI SERIAL (Single-Thread)
         double start_serial = omp_get_wtime();
         for (int i = 0; i < NUM_PARTICLES; ++i) {
             if (particles_serial[i].splashTimer > 0) {
@@ -85,7 +85,7 @@ int main(int argc, char* args[]) {
         double end_serial = omp_get_wtime();
         double serial_time_ms = (end_serial - start_serial) * 1000.0; // Konversi ke milidetik (ms)
 
-        // ---- 2. PENGUJIAN VERSI PARALEL (OpenMP Multi-Thread) ----
+        // 2. PENGUJIAN VERSI PARALEL (OpenMP Multi-Thread)
         double start_parallel = omp_get_wtime();
         #pragma omp parallel for
         for (int i = 0; i < NUM_PARTICLES; ++i) {
@@ -129,7 +129,7 @@ int main(int argc, char* args[]) {
                       << " | Speedup: " << speedup << "x" << std::flush;
         }
 
-        // ---- 3. RENDERING GRAFIS (SDL2) ----
+        // 3. RENDERING GRAFIS (SDL2)
         SDL_SetRenderDrawColor(renderer, 10, 15, 25, 255); 
         SDL_RenderClear(renderer);
 
